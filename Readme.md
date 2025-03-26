@@ -81,9 +81,74 @@ It creates a bubble chart to compare the performance of different channel groups
 - Bubble size representing the number of channels in each group
 - Color representing the Event F0.5 score
 
-## Example Usage
+## Command Line Usage
 
-Here's a basic workflow to use the system:
+The easiest way to use the system is through the `main.py` script, which provides a command-line interface for the entire pipeline:
+
+```bash
+python main.py --train_file 21_months.train.csv --output_dir results
+```
+
+### Command Line Arguments
+
+The `main.py` script supports the following command-line arguments:
+
+#### Data Paths
+- `--data_dir`: Directory containing data files (default: "data")
+- `--train_file`: Training file name (REQUIRED)
+- `--labels_file`: Labels file name (default: "labels.csv")
+- `--channels_file`: Channels metadata file name (default: "channels.csv")
+- `--anomaly_types_file`: Anomaly types definition file (default: "anomaly_types.csv")
+
+#### Processing Options
+- `--all_channels`: Use all channels instead of only target ones (flag)
+- `--resample_freq`: Resampling frequency (default: "30s")
+- `--window_size`: Window size for feature extraction (default: 256)
+- `--step_size`: Step size for sliding window (default: 128)
+
+#### Model Options
+- `--n_estimators`: Number of estimators for Isolation Forest (default: 500)
+- `--threshold_percentile`: Percentile threshold for anomaly detection (default: 98)
+- `--smoothing_window`: Window size for smoothing anomaly scores (default: 10)
+- `--min_anomaly_duration`: Minimum number of windows for an anomaly (default: 25)
+
+#### Output Options
+- `--output_dir`: Directory for saving results (default: "results")
+- `--verbose`: Enable verbose output (flag)
+
+### Examples
+
+1. **Basic usage with default parameters**:
+```bash
+python main.py --train_file 21_months.train.csv
+```
+
+2. **Using all channels with custom parameters**:
+```bash
+python main.py --train_file 21_months.train.csv --all_channels --window_size 512 --step_size 256 --n_estimators 1000
+```
+
+3. **Custom data directories and output**:
+```bash
+python main.py --data_dir /path/to/data --train_file telemetry.csv --output_dir /path/to/results --verbose
+```
+
+4. **Customizing anomaly detection parameters**:
+```bash
+python main.py --train_file 21_months.train.csv --threshold_percentile 95 --smoothing_window 20 --min_anomaly_duration 30
+```
+
+### Output
+
+The script creates the following in the output directory:
+- Individual model files (.pkl) for each channel group
+- Confusion matrix visualizations for each group
+- JSON files with detailed results for each group and overall metrics
+- Log file with execution details
+
+## Programmatic API Usage
+
+You can also use the system programmatically in your Python code:
 
 ```python
 import os
